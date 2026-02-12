@@ -265,9 +265,12 @@
       confettiCanvas.height = window.innerHeight;
     }
 
-    function randomNoPhrase() {
-      const randomIndex = Math.floor(Math.random() * noPhrases.length);
-      return noPhrases[randomIndex];
+    let phraseIndex = 1; // tracks order
+
+    function nextNoPhrase() {
+      const phrase = noPhrases[phraseIndex];
+      phraseIndex = (phraseIndex + 1) % noPhrases.length; // loop back
+      return phrase;
     }
 
     function moveNoButton() {
@@ -282,7 +285,7 @@
       noBtn.style.position = 'absolute';
       noBtn.style.left = `${randomX}px`;
       noBtn.style.top = `${randomY}px`;
-      noBtn.textContent = randomNoPhrase();
+      noBtn.textContent = nextNoPhrase();
     }
 
     function launchConfetti() {
