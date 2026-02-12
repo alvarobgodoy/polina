@@ -1,11 +1,352 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Be My Valentine?</title>
+  <style>
+    :root {
+      --bg-1: #fff2f8;
+      --bg-2: #f8e8ff;
+      --bg-3: #ffe8ef;
+      --ink: #3a1b2e;
+      --accent: #b13d78;
+      --accent-2: #8b2d63;
+      --card-border: rgba(177, 61, 120, 0.3);
+      --gold: #e8c892;
+      --shadow: 0 24px 55px rgba(115, 35, 83, 0.22);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+      position: relative;
+      color: var(--ink);
+      font-family: "Inter", "Avenir Next", "Segoe UI", sans-serif;
+      background:
+        radial-gradient(1200px 600px at 12% 10%, rgba(255, 255, 255, 0.55), transparent 60%),
+        radial-gradient(900px 500px at 90% 90%, rgba(255, 255, 255, 0.45), transparent 65%),
+        linear-gradient(135deg, var(--bg-1), var(--bg-2) 45%, var(--bg-3));
+    }
+
+    .polaroid-wall {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .polaroid {
+      position: absolute;
+      width: min(14vw, 220px);
+      aspect-ratio: 4 / 5;
+      background: #fff;
+      border-radius: 6px;
+      padding: 10px 10px 28px;
+      box-shadow: 0 14px 26px rgba(88, 20, 63, 0.22);
+      border: 1px solid rgba(0, 0, 0, 0.06);
+    }
+
+    .polaroid-photo {
+      width: 100%;
+      height: 100%;
+      border-radius: 3px;
+      overflow: hidden;
+      background: linear-gradient(145deg, #ff9ecf, #ffb9de 52%, #ffd5eb);
+      display: block;
+    }
+
+    .polaroid-photo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .polaroid.left-1 { left: 11vw; top: 8vh; transform: rotate(-11deg); }
+    .polaroid.left-2 { left: 12vw; top: 36vh; transform: rotate(6deg); }
+    .polaroid.left-3 { left: 13vw; top: 64vh; transform: rotate(-8deg); }
+
+    .polaroid.right-1 { right: 11vw; top: 9vh; transform: rotate(10deg); }
+    .polaroid.right-2 { right: 12vw; top: 38vh; transform: rotate(-7deg); }
+    .polaroid.right-3 { right: 13vw; top: 66vh; transform: rotate(8deg); }
+
+    .card {
+      width: min(92vw, 620px);
+      background: linear-gradient(155deg, rgba(255, 255, 255, 0.96), rgba(255, 250, 253, 0.88));
+      border-radius: 28px;
+      border: 1.5px solid var(--card-border);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(4px);
+      padding: 2.6rem 2rem 2.2rem;
+      text-align: center;
+      position: relative;
+      z-index: 2;
+      position: relative;
+    }
+
+    .card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      padding: 1px;
+      background: linear-gradient(130deg, rgba(232, 200, 146, 0.85), rgba(177, 61, 120, 0.6), rgba(255, 255, 255, 0));
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      pointer-events: none;
+    }
+
+    h1 {
+      font-family: "Playfair Display", "Cormorant Garamond", Georgia, serif;
+      font-size: clamp(2rem, 4vw, 3.15rem);
+      letter-spacing: 0.01em;
+      margin: 0;
+      color: #6e1848;
+      line-height: 1.15;
+    }
+
+    .heart {
+      font-size: 2.25rem;
+      margin-bottom: 0.9rem;
+      display: inline-block;
+      filter: drop-shadow(0 4px 8px rgba(177, 61, 120, 0.25));
+      animation: pulse 3s infinite;
+    }
+
+    .prompt,
+    .success {
+      margin-top: 1rem;
+      font-size: clamp(1.04rem, 2.3vw, 1.24rem);
+      line-height: 1.55;
+      color: #4d2a3f;
+    }
+
+    .success {
+      color: #7d194d;
+      font-weight: 600;
+    }
+
+    .buttons {
+      margin-top: 1.65rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 0.95rem;
+      flex-wrap: wrap;
+      min-height: 3.4rem;
+    }
+
+    button {
+      border-radius: 999px;
+      padding: 0.82rem 1.65rem;
+      font-weight: 700;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: transform 180ms ease, box-shadow 180ms ease, background 180ms ease;
+      border: 1px solid transparent;
+      letter-spacing: 0.01em;
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 18px rgba(65, 19, 48, 0.12);
+    }
+
+    #yesBtn {
+      color: #fff;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      box-shadow: 0 10px 20px rgba(177, 61, 120, 0.28);
+    }
+
+    #yesBtn:disabled {
+      opacity: 0.9;
+      cursor: default;
+    }
+
+    #noBtn {
+      color: #7d1f53;
+      background: linear-gradient(140deg, #ffffff, #fff5fb);
+      border-color: rgba(177, 61, 120, 0.22);
+    }
+
+    #confettiCanvas {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 3;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    @media (max-width: 980px) {
+      .polaroid-wall {
+        display: none;
+      }
+
+      .card {
+        width: min(92vw, 560px);
+      }
+    }
+
+    @keyframes pulse {
+      0%,
+      100% {
+        transform: scale(1);
+      }
+
+      50% {
+        transform: scale(1.6);
+      }
+    }
+  </style>
 </head>
 <body>
-    
+  <div class="polaroid-wall" aria-hidden="true">
+    <div class="polaroid left-1"><div class="polaroid-photo"><img src="/IMG_2792.jpg" alt="Placeholder memory 1" /></div></div>
+    <div class="polaroid left-2"><div class="polaroid-photo"><img src="/IMG_2873.jpg" alt="Placeholder memory 2" /></div></div>
+    <div class="polaroid left-3"><div class="polaroid-photo"><img src="/IMG_5267.jpg" alt="Placeholder memory 3" /></div></div>
+    <div class="polaroid right-1"><div class="polaroid-photo"><img src="/IMG_3905.jpg" alt="Placeholder memory 4" /></div></div>
+    <div class="polaroid right-2"><div class="polaroid-photo"><img src="/IMG_4901.jpg" alt="Placeholder memory 5" /></div></div>
+    <div class="polaroid right-3"><div class="polaroid-photo"><img src="/IMG_5301.jpg" alt="Placeholder memory 6" /></div></div>
+  </div>
+
+  <main class="card">
+    <div class="heart" aria-hidden="true">💘</div>
+    <h1>Will you be my Valentine?</h1>
+    <p class="prompt" id="promptText">I built this little page just for you 💖</p>
+    <p class="success hidden" id="successText">You just made me the happiest person alive! 🌹✨</p>
+
+    <div class="buttons" id="buttonArea">
+      <button id="yesBtn" type="button">Yes 💕</button>
+      <button id="noBtn" type="button">No 🙈</button>
+    </div>
+  </main>
+  <canvas id="confettiCanvas" aria-hidden="true"></canvas>
+
+  <script>
+    const noPhrases = [
+      'No 🙈',
+      'Are you sure? 🥺',
+      'Think again! 💭',
+      'Don\'t break my heart 💔',
+      'Pretty please? 🌸',
+      'Last chance 😘',
+      'Pisiunchik 😡',
+      'Anbelievable 😱',
+      "I CAN'T BELIEVE",
+      "ти пісюнчик",
+      "Crazy..."
+    ];
+
+    const noBtn = document.getElementById('noBtn');
+    const yesBtn = document.getElementById('yesBtn');
+    const successText = document.getElementById('successText');
+    const promptText = document.getElementById('promptText');
+    const confettiCanvas = document.getElementById('confettiCanvas');
+    const confettiContext = confettiCanvas.getContext('2d');
+
+    noBtn.onclick = moveNoButton;
+
+    function resizeCanvas() {
+      confettiCanvas.width = window.innerWidth;
+      confettiCanvas.height = window.innerHeight;
+    }
+
+    function randomNoPhrase() {
+      const randomIndex = Math.floor(Math.random() * noPhrases.length);
+      return noPhrases[randomIndex];
+    }
+
+    function moveNoButton() {
+      // const maxX = window.innerWidth - noBtn.offsetWidth - 10;
+      // const maxY = window.innerHeight - noBtn.offsetHeight - 10;
+      const maxX = 600;
+      const maxY = 350;
+
+      const randomX = Math.max(10, Math.floor(Math.random() * maxX));
+      const randomY = Math.max(10, Math.floor(Math.random() * maxY));
+
+      noBtn.style.position = 'absolute';
+      noBtn.style.left = `${randomX}px`;
+      noBtn.style.top = `${randomY}px`;
+      noBtn.textContent = randomNoPhrase();
+    }
+
+    function launchConfetti() {
+      resizeCanvas();
+
+      const colors = ['#ff4fa0', '#ffd166', '#7bdff2', '#b8f2e6', '#cdb4db', '#ff8fab'];
+      const particles = Array.from({ length: 180 }, () => ({
+        x: Math.random() * confettiCanvas.width,
+        y: -10 - Math.random() * confettiCanvas.height * 0.4,
+        size: 6 + Math.random() * 7,
+        speedY: 2 + Math.random() * 4,
+        speedX: -2 + Math.random() * 4,
+        rotation: Math.random() * Math.PI,
+        rotationSpeed: -0.2 + Math.random() * 0.4,
+        color: colors[Math.floor(Math.random() * colors.length)]
+      }));
+
+      const durationMs = 2400;
+      const startTime = performance.now();
+
+      function drawFrame(timestamp) {
+        const elapsed = timestamp - startTime;
+        confettiContext.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+
+        particles.forEach((particle) => {
+          particle.x += particle.speedX;
+          particle.y += particle.speedY;
+          particle.rotation += particle.rotationSpeed;
+
+          confettiContext.save();
+          confettiContext.translate(particle.x, particle.y);
+          confettiContext.rotate(particle.rotation);
+          confettiContext.fillStyle = particle.color;
+          confettiContext.fillRect(-particle.size / 2, -particle.size / 2, particle.size, particle.size * 0.7);
+          confettiContext.restore();
+        });
+
+        if (elapsed < durationMs) {
+          requestAnimationFrame(drawFrame);
+        } else {
+          confettiContext.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+        }
+      }
+
+      requestAnimationFrame(drawFrame);
+    }
+
+    noBtn.addEventListener('mouseenter', moveNoButton);
+    noBtn.addEventListener('touchstart', (event) => {
+      event.preventDefault();
+      moveNoButton();
+    }, { passive: false });
+
+    yesBtn.addEventListener('click', () => {
+      promptText.textContent = 'Best. Answer. Ever. 💞';
+      successText.classList.remove('hidden');
+      noBtn.classList.add('hidden');
+      yesBtn.textContent = 'You said YES! 🥰🥰🥰';
+      yesBtn.disabled = true;
+      launchConfetti();
+    });
+
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+  </script>
 </body>
 </html>
