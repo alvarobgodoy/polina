@@ -21,6 +21,7 @@
       display: grid;
       place-items: center;
       overflow: hidden;
+      position: relative;
     }
 
     .card {
@@ -31,6 +32,7 @@
       padding: 2.25rem 1.5rem 2rem;
       text-align: center;
       position: relative;
+      z-index: 2;
     }
 
     h1 {
@@ -95,6 +97,15 @@
       border: 2px solid #ffcce5;
     }
 
+    #confettiCanvas {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 3;
+    }
+
     .hidden {
       display: none;
     }
@@ -123,6 +134,7 @@
       <button id="noBtn" type="button">No 🙈</button>
     </div>
   </main>
+  <canvas id="confettiCanvas" aria-hidden="true"></canvas>
 
   <script>
     const noPhrases = [
@@ -138,8 +150,18 @@
     const yesBtn = document.getElementById('yesBtn');
     const successText = document.getElementById('successText');
     const promptText = document.getElementById('promptText');
+    const confettiCanvas = document.getElementById('confettiCanvas');
+    const confettiContext = confettiCanvas.getContext('2d');
 
-    let phraseIndex = 0;
+    function resizeCanvas() {
+      confettiCanvas.width = window.innerWidth;
+      confettiCanvas.height = window.innerHeight;
+    }
+
+    function randomNoPhrase() {
+      const randomIndex = Math.floor(Math.random() * noPhrases.length);
+      return noPhrases[randomIndex];
+    }
 
     function moveNoButton() {
       const maxX = window.innerWidth - noBtn.offsetWidth - 10;
@@ -151,9 +173,52 @@
       noBtn.style.position = 'fixed';
       noBtn.style.left = `${randomX}px`;
       noBtn.style.top = `${randomY}px`;
+      noBtn.textContent = randomNoPhrase();
+    }
 
-      phraseIndex = (phraseIndex + 1) % noPhrases.length;
-      noBtn.textContent = noPhrases[phraseIndex];
+    function launchConfetti() {
+      resizeCanvas();
+
+      const colors = ['#ff4fa0', '#ffd166', '#7bdff2', '#b8f2e6', '#cdb4db', '#ff8fab'];
+      const particles = Array.from({ length: 180 }, () => ({
+        x: Math.random() * confettiCanvas.width,
+        y: -10 - Math.random() * confettiCanvas.height * 0.4,
+        size: 6 + Math.random() * 7,
+        speedY: 2 + Math.random() * 4,
+        speedX: -2 + Math.random() * 4,
+        rotation: Math.random() * Math.PI,
+        rotationSpeed: -0.2 + Math.random() * 0.4,
+        color: colors[Math.floor(Math.random() * colors.length)]
+      }));
+
+      const durationMs = 2400;
+      const startTime = performance.now();
+
+      function drawFrame(timestamp) {
+        const elapsed = timestamp - startTime;
+        confettiContext.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+
+        particles.forEach((particle) => {
+          particle.x += particle.speedX;
+          particle.y += particle.speedY;
+          particle.rotation += particle.rotationSpeed;
+
+          confettiContext.save();
+          confettiContext.translate(particle.x, particle.y);
+          confettiContext.rotate(particle.rotation);
+          confettiContext.fillStyle = particle.color;
+          confettiContext.fillRect(-particle.size / 2, -particle.size / 2, particle.size, particle.size * 0.7);
+          confettiContext.restore();
+        });
+
+        if (elapsed < durationMs) {
+          requestAnimationFrame(drawFrame);
+        } else {
+          confettiContext.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+        }
+      }
+
+      requestAnimationFrame(drawFrame);
     }
 
     noBtn.addEventListener('mouseenter', moveNoButton);
@@ -168,7 +233,11 @@
       noBtn.classList.add('hidden');
       yesBtn.textContent = 'You said YES! 🎉';
       yesBtn.disabled = true;
+      launchConfetti();
     });
+
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
   </script>
 </body>
 </html>
