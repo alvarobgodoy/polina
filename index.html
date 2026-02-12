@@ -24,6 +24,46 @@
       position: relative;
     }
 
+    .polaroid-wall {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .polaroid {
+      position: absolute;
+      width: clamp(96px, 11vw, 140px);
+      aspect-ratio: 4 / 5;
+      background: #fff;
+      border-radius: 4px;
+      padding: 8px 8px 22px;
+      box-shadow: 0 10px 22px rgba(88, 20, 63, 0.24);
+    }
+
+    .polaroid::before {
+      content: "photo";
+      display: grid;
+      place-items: center;
+      width: 100%;
+      height: 100%;
+      border-radius: 2px;
+      color: rgba(255, 255, 255, 0.95);
+      font-weight: 600;
+      font-size: 0.86rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      background: linear-gradient(135deg, #ff8fc9, #ffb3da 45%, #ffcde7);
+    }
+
+    .polaroid.left-1 { left: 4vw; top: 10vh; transform: rotate(-12deg); }
+    .polaroid.left-2 { left: 3vw; top: 38vh; transform: rotate(7deg); }
+    .polaroid.left-3 { left: 5vw; top: 65vh; transform: rotate(-8deg); }
+
+    .polaroid.right-1 { right: 5vw; top: 12vh; transform: rotate(10deg); }
+    .polaroid.right-2 { right: 3vw; top: 40vh; transform: rotate(-7deg); }
+    .polaroid.right-3 { right: 6vw; top: 67vh; transform: rotate(9deg); }
+
     .card {
       width: min(92vw, 560px);
       background: rgba(255, 255, 255, 0.9);
@@ -110,6 +150,12 @@
       display: none;
     }
 
+    @media (max-width: 900px) {
+      .polaroid-wall {
+        display: none;
+      }
+    }
+
     @keyframes pulse {
       0%,
       100% {
@@ -123,6 +169,15 @@
   </style>
 </head>
 <body>
+  <div class="polaroid-wall" aria-hidden="true">
+    <div class="polaroid left-1"></div>
+    <div class="polaroid left-2"></div>
+    <div class="polaroid left-3"></div>
+    <div class="polaroid right-1"></div>
+    <div class="polaroid right-2"></div>
+    <div class="polaroid right-3"></div>
+  </div>
+
   <main class="card">
     <div class="heart" aria-hidden="true">💘</div>
     <h1>Will you be my Valentine?</h1>
