@@ -45,7 +45,7 @@
 
     .polaroid {
       position: absolute;
-      width: min(14vw, 200px);
+      width: min(14vw, 220px);
       aspect-ratio: 4 / 5;
       background: #fff;
       border-radius: 6px;
@@ -70,13 +70,13 @@
       display: block;
     }
 
-    .polaroid.left-1 { left: 4vw; top: 8vh; transform: rotate(-11deg); }
-    .polaroid.left-2 { left: 2.5vw; top: 36vh; transform: rotate(6deg); }
-    .polaroid.left-3 { left: 5vw; top: 64vh; transform: rotate(-8deg); }
+    .polaroid.left-1 { left: 11vw; top: 8vh; transform: rotate(-11deg); }
+    .polaroid.left-2 { left: 12vw; top: 36vh; transform: rotate(6deg); }
+    .polaroid.left-3 { left: 13vw; top: 64vh; transform: rotate(-8deg); }
 
-    .polaroid.right-1 { right: 5vw; top: 9vh; transform: rotate(10deg); }
-    .polaroid.right-2 { right: 2.6vw; top: 38vh; transform: rotate(-7deg); }
-    .polaroid.right-3 { right: 5.6vw; top: 66vh; transform: rotate(8deg); }
+    .polaroid.right-1 { right: 11vw; top: 9vh; transform: rotate(10deg); }
+    .polaroid.right-2 { right: 12vw; top: 38vh; transform: rotate(-7deg); }
+    .polaroid.right-3 { right: 13vw; top: 66vh; transform: rotate(8deg); }
 
     .card {
       width: min(92vw, 620px);
@@ -89,7 +89,7 @@
       text-align: center;
       position: relative;
       z-index: 2;
-      overflow: hidden;
+      position: relative;
     }
 
     .card::before {
@@ -119,7 +119,7 @@
       margin-bottom: 0.9rem;
       display: inline-block;
       filter: drop-shadow(0 4px 8px rgba(177, 61, 120, 0.25));
-      animation: pulse 1.4s infinite;
+      animation: pulse 3s infinite;
     }
 
     .prompt,
@@ -143,7 +143,6 @@
       gap: 0.95rem;
       flex-wrap: wrap;
       min-height: 3.4rem;
-      position: relative;
     }
 
     button {
@@ -209,26 +208,26 @@
       }
 
       50% {
-        transform: scale(1.12);
+        transform: scale(1.6);
       }
     }
   </style>
 </head>
 <body>
   <div class="polaroid-wall" aria-hidden="true">
-    <div class="polaroid left-1"><div class="polaroid-photo"><img src="https://placehold.co/400x500/F8A3CC/ffffff?text=Photo+1" alt="Placeholder memory 1" /></div></div>
-    <div class="polaroid left-2"><div class="polaroid-photo"><img src="https://placehold.co/400x500/FFB3DA/ffffff?text=Photo+2" alt="Placeholder memory 2" /></div></div>
-    <div class="polaroid left-3"><div class="polaroid-photo"><img src="https://placehold.co/400x500/F4A8D8/ffffff?text=Photo+3" alt="Placeholder memory 3" /></div></div>
-    <div class="polaroid right-1"><div class="polaroid-photo"><img src="https://placehold.co/400x500/EE9CC9/ffffff?text=Photo+4" alt="Placeholder memory 4" /></div></div>
-    <div class="polaroid right-2"><div class="polaroid-photo"><img src="https://placehold.co/400x500/FFBDD9/ffffff?text=Photo+5" alt="Placeholder memory 5" /></div></div>
-    <div class="polaroid right-3"><div class="polaroid-photo"><img src="https://placehold.co/400x500/F8AED2/ffffff?text=Photo+6" alt="Placeholder memory 6" /></div></div>
+    <div class="polaroid left-1"><div class="polaroid-photo"><img src="/IMG_2792.jpg" alt="Placeholder memory 1" /></div></div>
+    <div class="polaroid left-2"><div class="polaroid-photo"><img src="/IMG_2873.jpg" alt="Placeholder memory 2" /></div></div>
+    <div class="polaroid left-3"><div class="polaroid-photo"><img src="/IMG_5267.jpg" alt="Placeholder memory 3" /></div></div>
+    <div class="polaroid right-1"><div class="polaroid-photo"><img src="/IMG_3905.jpg" alt="Placeholder memory 4" /></div></div>
+    <div class="polaroid right-2"><div class="polaroid-photo"><img src="/IMG_4901.jpg" alt="Placeholder memory 5" /></div></div>
+    <div class="polaroid right-3"><div class="polaroid-photo"><img src="/IMG_5301.jpg" alt="Placeholder memory 6" /></div></div>
   </div>
 
   <main class="card">
     <div class="heart" aria-hidden="true">💘</div>
     <h1>Will you be my Valentine?</h1>
-    <p class="prompt" id="promptText">I planned this little page just for you 💖</p>
-    <p class="success hidden" id="successText">YAY! You just made me the happiest person alive! 🌹✨</p>
+    <p class="prompt" id="promptText">I built this little page just for you 💖</p>
+    <p class="success hidden" id="successText">You just made me the happiest person alive! 🌹✨</p>
 
     <div class="buttons" id="buttonArea">
       <button id="yesBtn" type="button">Yes 💕</button>
@@ -244,7 +243,12 @@
       'Think again! 💭',
       'Don\'t break my heart 💔',
       'Pretty please? 🌸',
-      'Last chance 😘'
+      'Last chance 😘',
+      'Pisiunchik 😡',
+      'Anbelievable 😱',
+      "I CAN'T BELIEVE",
+      "ти пісюнчик",
+      "Crazy..."
     ];
 
     const noBtn = document.getElementById('noBtn');
@@ -253,6 +257,8 @@
     const promptText = document.getElementById('promptText');
     const confettiCanvas = document.getElementById('confettiCanvas');
     const confettiContext = confettiCanvas.getContext('2d');
+
+    noBtn.onclick = moveNoButton;
 
     function resizeCanvas() {
       confettiCanvas.width = window.innerWidth;
@@ -265,13 +271,15 @@
     }
 
     function moveNoButton() {
-      const maxX = window.innerWidth - noBtn.offsetWidth - 10;
-      const maxY = window.innerHeight - noBtn.offsetHeight - 10;
+      // const maxX = window.innerWidth - noBtn.offsetWidth - 10;
+      // const maxY = window.innerHeight - noBtn.offsetHeight - 10;
+      const maxX = 600;
+      const maxY = 350;
 
       const randomX = Math.max(10, Math.floor(Math.random() * maxX));
       const randomY = Math.max(10, Math.floor(Math.random() * maxY));
 
-      noBtn.style.position = 'fixed';
+      noBtn.style.position = 'absolute';
       noBtn.style.left = `${randomX}px`;
       noBtn.style.top = `${randomY}px`;
       noBtn.textContent = randomNoPhrase();
@@ -332,7 +340,7 @@
       promptText.textContent = 'Best. Answer. Ever. 💞';
       successText.classList.remove('hidden');
       noBtn.classList.add('hidden');
-      yesBtn.textContent = 'You said YES! 🎉';
+      yesBtn.textContent = 'You said YES! ⛓️‍💥⛓️‍💥⛓️‍💥';
       yesBtn.disabled = true;
       launchConfetti();
     });
